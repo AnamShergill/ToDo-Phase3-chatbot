@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-app: 7, 11, 20;
+  --surface: 15, 23, 42;
+  --highlight-primary: 168, 85, 247;
+  --highlight-secondary: 34, 211, 238;
+  --success: 74, 222, 128;
+  --warning: 250, 204, 21;
+  --danger: 244, 63, 94;
+  --text-primary: 229, 231, 235;
+  --text-muted: 148, 163, 184;
+  --border: 30, 41, 59;
+}
+
+body {
+  color: rgb(var(--text-primary));
+  background-color: rgb(var(--bg-app));
+  min-height: 100vh;
+}
+
+/* Neon Detonator Theme Base Styles */
+.bg-app {
+  background-color: rgb(var(--bg-app));
+}
+
+.bg-surface {
+  background-color: rgb(var(--surface));
+}
+
+.highlight-primary {
+  color: rgb(var(--highlight-primary));
+}
+
+.highlight-secondary {
+  color: rgb(var(--highlight-secondary));
+}
+
+.text-primary {
+  color: rgb(var(--text-primary));
+}
+
+.text-muted {
+  color: rgb(var(--text-muted));
+}
+
+.border-neon {
+  border-color: rgb(var(--border));
+}
+
+.success-color {
+  color: rgb(var(--success));
+}
+
+.warning-color {
+  color: rgb(var(--warning));
+}
+
+.danger-color {
+  color: rgb(var(--danger));
+}
+
+/* Enhanced component styles */
+.card {
+  background-color: rgb(var(--surface));
+  border: 1px solid rgb(var(--border));
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+  border-color: rgb(var(--highlight-primary));
+  box-shadow: 0 0 10px rgba(var(--highlight-primary), 0.3);
+}
+
+.input-field {
+  background-color: rgb(var(--surface));
+  border: 1px solid rgb(var(--border));
+  color: rgb(var(--text-primary));
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: rgb(var(--highlight-secondary));
+  box-shadow: 0 0 10px rgba(var(--highlight-secondary), 0.3);
+}
+
+.button-primary {
+  background-color: rgb(var(--highlight-primary));
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 0 10px rgba(var(--highlight-primary), 0.3);
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-primary:hover {
+  background-color: rgba(var(--highlight-primary), 0.9);
+  box-shadow: 0 0 20px rgba(var(--highlight-primary), 0.6), 0 0 30px rgba(var(--highlight-primary), 0.3);
+  transform: translateY(-1px);
+}
+
+.button-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--highlight-primary), 0.2);
+}
+
+.button-primary:disabled {
+  background-color: rgb(var(--text-muted));
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.button-secondary {
+  background-color: transparent;
+  color: rgb(var(--text-muted));
+  border: 1px solid rgb(var(--border));
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-secondary:hover {
+  background-color: rgba(var(--highlight-primary), 0.1);
+  border-color: rgb(var(--highlight-primary));
+}
+
+.button-success {
+  background-color: rgb(var(--success));
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 0 10px rgba(var(--success), 0.3);
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-success:hover {
+  background-color: rgba(var(--success), 0.9);
+  box-shadow: 0 0 20px rgba(var(--success), 0.6), 0 0 30px rgba(var(--success), 0.3);
+}
+
+.button-warning {
+  background-color: rgb(var(--warning));
+  color: black;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 0 10px rgba(var(--warning), 0.3);
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-warning:hover {
+  background-color: rgba(var(--warning), 0.9);
+  box-shadow: 0 0 20px rgba(var(--warning), 0.6), 0 0 30px rgba(var(--warning), 0.3);
+}
+
+.button-danger {
+  background-color: rgb(var(--danger));
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 0 10px rgba(var(--danger), 0.3);
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-danger:hover {
+  background-color: rgba(var(--danger), 0.9);
+  box-shadow: 0 0 20px rgba(var(--danger), 0.6), 0 0 30px rgba(var(--danger), 0.3);
+}
+
+.neon-glow {
+  animation: glowFade 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glowFade {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(var(--highlight-primary), 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(var(--highlight-primary), 0.6), 0 0 30px rgba(var(--highlight-primary), 0.3);
+  }
+}
+
+.pulse-neon {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.glow-success {
+  animation: glowSuccess 0.5s ease-in-out;
+}
+
+@keyframes glowSuccess {
+  0% { box-shadow: 0 0 5px rgba(var(--success), 0.3); }
+  50% { box-shadow: 0 0 20px rgba(var(--success), 0.8), 0 0 30px rgba(var(--success), 0.4); }
+  100% { box-shadow: 0 0 5px rgba(var(--success), 0.3); }
+}
+
+.glow-danger {
+  animation: glowDanger 0.5s ease-in-out;
+}
+
+@keyframes glowDanger {
+  0% { box-shadow: 0 0 5px rgba(var(--danger), 0.3); }
+  50% { box-shadow: 0 0 20px rgba(var(--danger), 0.8), 0 0 30px rgba(var(--danger), 0.4); }
+  100% { box-shadow: 0 0 5px rgba(var(--danger), 0.3); }
+}

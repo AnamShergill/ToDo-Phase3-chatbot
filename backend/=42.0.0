@@ -1,0 +1,26 @@
+Collecting python-multipart==0.0.10
+  Downloading python_multipart-0.0.10-py3-none-any.whl.metadata (1.9 kB)
+Requirement already satisfied: passlib==1.7.4 in c:\users\bruno\appdata\local\programs\python\python314\lib\site-packages (from passlib[bcrypt]==1.7.4) (1.7.4)
+Collecting python-jose==3.3.0 (from python-jose[cryptography]==3.3.0)
+  Using cached python_jose-3.3.0-py2.py3-none-any.whl.metadata (5.4 kB)
+Requirement already satisfied: cryptography in c:\users\bruno\appdata\local\programs\python\python314\lib\site-packages (46.0.3)
+Requirement already satisfied: ecdsa!=0.15 in c:\users\bruno\appdata\local\programs\python\python314\lib\site-packages (from python-jose==3.3.0->python-jose[cryptography]==3.3.0) (0.19.1)
+Requirement already satisfied: rsa in c:\users\bruno\appdata\local\programs\python\python314\lib\site-packages (from python-jose==3.3.0->python-jose[cryptography]==3.3.0) (4.9.1)
+Requirement already satisfied: pyasn1 in c:\users\bruno\appdata\local\programs\python\python314\lib\site-packages (from python-jose==3.3.0->python-jose[cryptography]==3.3.0) (0.6.1)
+Requirement already satisfied: bcrypt>=3.1.0 in c:\users\bruno\appdata\local\programs\python\python314\lib\site-packages (from passlib[bcrypt]==1.7.4) (5.0.0)
+Requirement already satisfied: cffi>=2.0.0 in c:\users\bruno\appdata\local\programs\python\python314\lib\site-packages (from cryptography) (2.0.0)
+Requirement already satisfied: pycparser in c:\users\bruno\appdata\local\programs\python\python314\lib\site-packages (from cffi>=2.0.0->cryptography) (2.23)
+Requirement already satisfied: six>=1.9.0 in c:\users\bruno\appdata\local\programs\python\python314\lib\site-packages (from ecdsa!=0.15->python-jose==3.3.0->python-jose[cryptography]==3.3.0) (1.17.0)
+Downloading python_multipart-0.0.10-py3-none-any.whl (22 kB)
+Downloading python_jose-3.3.0-py2.py3-none-any.whl (33 kB)
+Installing collected packages: python-multipart, python-jose
+  Attempting uninstall: python-multipart
+    Found existing installation: python-multipart 0.0.21
+    Uninstalling python-multipart-0.0.21:
+      Successfully uninstalled python-multipart-0.0.21
+  Attempting uninstall: python-jose
+    Found existing installation: python-jose 3.5.0
+    Uninstalling python-jose-3.5.0:
+      Successfully uninstalled python-jose-3.5.0
+
+Successfully installed python-jose-3.3.0 python-multipart-0.0.10
