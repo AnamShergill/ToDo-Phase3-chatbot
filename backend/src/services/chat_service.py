@@ -173,8 +173,13 @@ class ChatService:
                 response_text = f"I encountered an error while listing tasks: {str(e)}"
 
         elif 'complete' in lower_msg or 'done' in lower_msg or 'finish' in lower_msg:
-            # Extract task identifier (this would be more sophisticated in a real implementation)
+            # First try to extract task ID from the message
             task_id = self._extract_task_id(user_message)
+
+            # If we couldn't extract from the message, try to identify the task by title
+            if not task_id:
+                task_id = await self._identify_task_by_title(user_id, user_message, history)
+
             if task_id:
                 try:
                     tool_params = {
@@ -194,11 +199,43 @@ class ChatService:
                 except Exception as e:
                     response_text = f"I encountered an error while completing the task: {str(e)}"
             else:
-                response_text = "I can help you mark a task as complete. Please specify which task."
+                # If we still can't identify the task, list tasks to help user identify it
+                try:
+                    # List all tasks to help user identify which one to complete
+                    list_params = {
+                        'user_id': user_id,
+                        'status': 'all'
+                    }
+                    result = await mcp_server.call_tool('list_tasks', list_params)
+
+                    if result.get('success') and result.get('tasks'):
+                        tasks = result.get('tasks', [])
+                        if tasks:
+                            pending_tasks = [task for task in tasks if not task['completed']]
+                            if pending_tasks:
+                                task_list = "\n".join([f"- {task['id']}: {task['title']}" for task in pending_tasks[:10]])  # Limit to first 10
+
+                                if len(pending_tasks) > 10:
+                                    task_list += f"\n... and {len(pending_tasks) - 10} more tasks"
+
+                                response_text = f"I found these pending tasks. Please specify which one to mark as complete:\n{task_list}\n\nFor example: 'complete buy groceries' or 'mark task 5 as complete'"
+                            else:
+                                response_text = "You don't have any pending tasks to complete."
+                        else:
+                            response_text = "You don't have any tasks to complete."
+                    else:
+                        response_text = "I couldn't find your tasks to help with completion. Please specify which task you want to complete."
+                except Exception as e:
+                    response_text = f"I can help you mark a task as complete. Please specify which task by name. Error listing tasks: {str(e)}"
 
         elif 'delete' in lower_msg or 'remove' in lower_msg:
-            # Extract task identifier
+            # First try to extract task ID from the message
             task_id = self._extract_task_id(user_message)
+
+            # If we couldn't extract from the message, try to identify the task by title
+            if not task_id:
+                task_id = await self._identify_task_by_title(user_id, user_message, history)
+
             if task_id:
                 try:
                     tool_params = {
@@ -218,11 +255,39 @@ class ChatService:
                 except Exception as e:
                     response_text = f"I encountered an error while deleting the task: {str(e)}"
             else:
-                response_text = "I can help you delete a task. Please specify which task."
+                # If we still can't identify the task, list tasks to help user identify it
+                try:
+                    # List all tasks to help user identify which one to delete
+                    list_params = {
+                        'user_id': user_id,
+                        'status': 'all'
+                    }
+                    result = await mcp_server.call_tool('list_tasks', list_params)
+
+                    if result.get('success') and result.get('tasks'):
+                        tasks = result.get('tasks', [])
+                        if tasks:
+                            task_list = "\n".join([f"- {task['id']}: {task['title']}" for task in tasks[:10]])  # Limit to first 10
+
+                            if len(tasks) > 10:
+                                task_list += f"\n... and {len(tasks) - 10} more tasks"
+
+                            response_text = f"I found these tasks. Please specify which one to delete by mentioning the task name:\n{task_list}\n\nFor example: 'delete buy groceries' or 'remove task with ID 5'"
+                        else:
+                            response_text = "You don't have any tasks to delete."
+                    else:
+                        response_text = "I couldn't find your tasks to help with deletion. Please specify which task you want to delete."
+                except Exception as e:
+                    response_text = f"I can help you delete a task. Please specify which task by name. Error listing tasks: {str(e)}"
 
         elif 'update' in lower_msg or 'change' in lower_msg or 'modify' in lower_msg:
-            # Extract task identifier and new details
+            # First try to extract task ID from the message
             task_id = self._extract_task_id(user_message)
+
+            # If we couldn't extract from the message, try to identify the task by title
+            if not task_id:
+                task_id = await self._identify_task_by_title(user_id, user_message, history)
+
             if task_id:
                 new_title = self._extract_task_title(user_message)
                 try:
@@ -246,7 +311,30 @@ class ChatService:
                 except Exception as e:
                     response_text = f"I encountered an error while updating the task: {str(e)}"
             else:
-                response_text = "I can help you update a task. Please specify which task and what changes to make."
+                # If we still can't identify the task, list tasks to help user identify it
+                try:
+                    # List all tasks to help user identify which one to update
+                    list_params = {
+                        'user_id': user_id,
+                        'status': 'all'
+                    }
+                    result = await mcp_server.call_tool('list_tasks', list_params)
+
+                    if result.get('success') and result.get('tasks'):
+                        tasks = result.get('tasks', [])
+                        if tasks:
+                            task_list = "\n".join([f"- {task['id']}: {task['title']}" for task in tasks[:10]])  # Limit to first 10
+
+                            if len(tasks) > 10:
+                                task_list += f"\n... and {len(tasks) - 10} more tasks"
+
+                            response_text = f"I found these tasks. Please specify which one to update by mentioning the task name:\n{task_list}\n\nFor example: 'update buy groceries to buy milk' or 'change task 5 title to new title'"
+                        else:
+                            response_text = "You don't have any tasks to update."
+                    else:
+                        response_text = "I couldn't find your tasks to help with updates. Please specify which task you want to update."
+                except Exception as e:
+                    response_text = f"I can help you update a task. Please specify which task by name. Error listing tasks: {str(e)}"
 
         else:
             # Default response for unrecognized commands
@@ -290,4 +378,66 @@ class ChatService:
         # This is a simplified version - in reality, you'd need more advanced NLP
         # to identify which specific task the user wants to operate on
         # For now, we'll just return None to indicate that we can't reliably identify the task
+        return None
+
+    async def _identify_task_by_title(self, user_id: int, message: str, history: List[Dict[str, Any]]) -> int:
+        """
+        Identify a task by title from user message using the most recent task list
+        This looks through the conversation history to find the most recent list_tasks response
+        and tries to match the requested task title.
+        """
+        from src.mcp.server import mcp_server
+
+        # Look through conversation history for the most recent list_tasks call
+        for msg in reversed(history):
+            # Check if this message contains tool calls with list_tasks results
+            if msg.get('role') == 'assistant':
+                # Try to find a list_tasks tool call in previous responses
+                # For now, let's list tasks and try to match based on title
+                try:
+                    # Get all pending tasks for the user
+                    list_params = {'user_id': user_id, 'status': 'all'}
+                    result = await mcp_server.call_tool('list_tasks', list_params)
+
+                    if result.get('success'):
+                        tasks = result.get('tasks', [])
+
+                        # Look for task title matches in the message
+                        message_lower = message.lower()
+
+                        # Look for exact matches first
+                        for task in tasks:
+                            task_title_lower = task['title'].lower()
+
+                            # Check if the task title is mentioned in the user message
+                            if task_title_lower in message_lower:
+                                return task['id']
+
+                            # Check for partial matches
+                            task_words = set(task_title_lower.split())
+                            message_words = set(message_lower.split())
+
+                            # If there's significant overlap in words, consider it a match
+                            if len(task_words.intersection(message_words)) >= max(1, len(task_words) // 2):
+                                return task['id']
+
+                        # If no exact match, try fuzzy matching for common patterns
+                        for task in tasks:
+                            task_title_lower = task['title'].lower()
+
+                            # Look for common delete patterns like "delete taskname" or "remove taskname"
+                            if 'delete' in message_lower or 'remove' in message_lower:
+                                # Extract what comes after the command
+                                for word in ['delete', 'remove', 'kill', 'erase']:
+                                    if word in message_lower:
+                                        after_word = message_lower.split(word)[1].strip()
+
+                                        # Check if task title is contained in the remainder
+                                        if task_title_lower in after_word or after_word in task_title_lower:
+                                            return task['id']
+
+                except Exception as e:
+                    print(f"Error identifying task by title: {str(e)}")
+                    continue
+
         return None
