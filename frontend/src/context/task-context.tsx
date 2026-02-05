@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { taskApi } from '../lib/api';
+import { taskApi } from '../lib/api.ts';
 import { useAuth } from './auth-context';
 
 interface Task {

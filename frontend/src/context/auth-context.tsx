@@ -2,8 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import api from '@/lib/api';
-import { jwtAuth } from '@/lib/auth';
+import api from '@/lib/api.ts';
+import { jwtAuth } from '@/lib/auth.ts';
 
 interface User {
   id: number;
