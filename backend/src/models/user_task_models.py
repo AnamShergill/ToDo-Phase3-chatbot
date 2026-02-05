@@ -3,8 +3,6 @@ from typing import Optional, TYPE_CHECKING
 from datetime import datetime
 import uuid
 
-if TYPE_CHECKING:
-    from .user_task_models import Task  # Forward reference for type checking
 
 
 class User(SQLModel, table=True):
