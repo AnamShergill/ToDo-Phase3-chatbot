@@ -3,7 +3,6 @@ from sqlmodel import Session, select
 from typing import Optional
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from pydantic import BaseModel
 
 from ..database.session import get_session
@@ -12,23 +11,33 @@ from ..schemas.task_schemas import TaskDetailResponse
 
 # Configuration
 import os
-SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")  # Use SECRET_KEY environment variable
+SECRET_KEY = os.getenv("SECRET_KEY", "2df80a9a2e5581e96f8b45c0c57d9bb89ef0aab1cc1e075a98dfb2811a1c5bfc")  # Use SECRET_KEY environment variable
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# Password hashing with fallback schemes
-pwd_context = CryptContext(schemes=["bcrypt", "argon2", "plaintext"], deprecated="auto")
+import hashlib
+import secrets
 
 # JWT utilities
 def verify_password(plain_password, hashed_password):
-    # Bcrypt has a 72-byte password length limit, so we truncate if needed
-    truncated_password = plain_password[:72] if len(plain_password) > 72 else plain_password
-    return pwd_context.verify(truncated_password, hashed_password)
+    """Verify a password against a hash."""
+    # Expecting format: "salt$hash"
+    try:
+        salt, stored_hash = hashed_password.split('$')
+        computed_hash = hashlib.sha256(salt.encode() + plain_password.encode()).hexdigest()
+        return computed_hash == stored_hash
+    except ValueError:
+        # Fallback for any parsing errors
+        return False
 
 def get_password_hash(password):
-    # Bcrypt has a 72-byte password length limit, so we truncate if needed
-    truncated_password = password[:72] if len(password) > 72 else password
-    return pwd_context.hash(truncated_password)
+    """Generate a password hash using SHA-256 with salt."""
+    # Generate a random salt
+    salt = secrets.token_hex(16)
+    # Create hash: salt + password -> SHA-256
+    hashed = hashlib.sha256(salt.encode() + password.encode()).hexdigest()
+    # Store as: "salt$hash" for retrieval
+    return f"{salt}${hashed}"
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
