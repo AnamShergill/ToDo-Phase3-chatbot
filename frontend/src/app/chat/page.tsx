@@ -64,7 +64,7 @@ export default function ChatPage() {
       setMessages(prev => [...prev, userMessage]);
 
       // Send message to API
-      const response = await chatApi.sendMessage(user.id, message, currentConversationId);
+      const response = await chatApi.sendMessage(user.id, message, currentConversationId ?? undefined);
 
       // Update conversation ID if new conversation was created
       if (response.conversation_id && !currentConversationId) {
