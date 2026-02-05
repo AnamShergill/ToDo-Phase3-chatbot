@@ -1,4 +1,4 @@
-import api from './api.ts';
+import api from './api';
 
 // Chat API functions
 export const chatApi = {
