@@ -35,10 +35,24 @@ app = FastAPI(
 )
 
 # Add CORS middleware
+import os
+allowed_origins = [
+    "http://localhost:3000",  # Local frontend development
+    "http://localhost:3001",  # Alternative local frontend port
+    "https://to-do-phase3-chatbot.vercel.app/",  # Production frontend
+]
+
+# Allow additional origins from environment variable
+additional_origins = os.getenv("CORS_ALLOWED_ORIGINS")
+if additional_origins:
+    for origin in additional_origins.split(","):
+        origin = origin.strip()
+        if origin:
+            allowed_origins.append(origin)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000",
-        "https://to-do-phase3-chatbot.vercel.app/"],  # In production, replace with specific origins
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
